@@ -13,5 +13,5 @@ setup (
       packages=['pychseg', 'pychseg.utils', 'pychseg.mmseg'],
       package_dir={'pychseg': 'pychseg'},
       package_data={'pychseg': ['wordlist/*.lex']},
-      ext_modules = [charutils_module]
+      #ext_modules = [charutils_module]
 )
