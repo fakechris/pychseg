@@ -35,6 +35,9 @@ import mmrule, lawlrule, svwlrule, lsdmfocwrule, revlenrule
 class Ambiguity(Exception):
     pass
 
+"""
+from pychseg.charutils import is_basic_latin
+"""
 def is_basic_latin(c):
     h = ord(c)
     return h >= 32 and h <= 127
@@ -96,6 +99,7 @@ class Algorithm:
                 return None
     
     def create_chunks(self): pass
+    def get_filters(self): pass
             
     def get_basic_latin_word(self):
         """
@@ -125,7 +129,7 @@ class Algorithm:
             return None
     
     def get_cjk_words(self, chunks):
-        filters = [mmrule.filter, lawlrule.filter, svwlrule.filter, lsdmfocwrule.filter, revlenrule.filter]
+        filters = self.get_filters()
         
         for filter in filters:
             chunks = filter(chunks) 
@@ -159,10 +163,16 @@ class Algorithm:
         return match_words
     
 class SimpleAlgorithm(Algorithm):
+    def get_filters(self):
+        return [mmrule.filter]
+    
     def create_chunks(self):
         return map(lambda x: Chunk([x]), self.find_match_word(self.pos))    
     
 class ComplexAlgorithm(Algorithm):    
+    def get_filters(self):
+        return [mmrule.filter, lawlrule.filter, svwlrule.filter, lsdmfocwrule.filter, revlenrule.filter]
+    
     def create_chunks(self):
         _pos=self.pos; _len=len; _length=self.length
         chunks = []
@@ -206,8 +216,8 @@ if __name__ == "__main__":
              u"主持人把一只割去头的羊放在指定处。枪响后，甲乙两队共同向羊飞驰而去，先抢到羊的同队队员互相掩护，极力向终点奔驰，双方骑手们施展各种技巧，围追堵截，拼命抢夺。叼着羊先到达终点的为胜方。获胜者按照当地的习俗，将羊当场烤熟，请众骑手共享，称为“幸福肉”。",
              ]
     for t in tests:
-        #a = SimpleAlgorithm(t)
-        a = ComplexAlgorithm(t)
+        a = SimpleAlgorithm(t)
+        #a = ComplexAlgorithm(t)
         words = a.segment()
         ww = [w for w in words]
         #print ww, len(ww)
@@ -216,7 +226,8 @@ if __name__ == "__main__":
     testlen = len(testdata)    
     logging.info("segment big chunks %s" % testlen)
         
-    a = ComplexAlgorithm(testdata)
+    a = SimpleAlgorithm(testdata)
+    #a = ComplexAlgorithm(testdata)
     
     def testcall(a, testdata):
         import time            
@@ -230,8 +241,8 @@ if __name__ == "__main__":
     
     
     from pychseg.utils.profiler import profile_call        
-    profile_call(testcall, a ,testdata)
-    #testcall(a, testdata)
+    #profile_call(testcall, a ,testdata)
+    testcall(a, testdata)
     
     print a.find_match_word.hits, a.find_match_word.misses
     
