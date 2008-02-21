@@ -56,6 +56,24 @@ def takemost(val2cmp, iterable, reverse=True):
     return most_result
 """
 
+def joindict(dict1, dict2):
+    """
+    >>> [i for i in joindict({'1':2, 3:5, '3':12, '4':2}, {'4':11,1:12,3:2})]
+    [3, '4']
+    """       
+    for d in dict1:
+        if dict2.has_key(d):
+            yield d
+
+def joindictvalue(dict1, dict2):
+    """
+    >>> [i for i in joindictvalue({'1':2, 3:5, '3':12, '4':2}, {'4':11,1:12,3:2})]
+    [(5, 2), (2, 11)]
+    """       
+    for d in dict1:
+        if dict2.has_key(d):
+            yield dict1[d], dict2[d]
+
 def _test():
     import doctest
     doctest.testmod()
