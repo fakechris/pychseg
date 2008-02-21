@@ -31,7 +31,7 @@ def takemost(val2cmp, iterable, reverse=True):
     for i, obj in enumerate(iterable):
         v = val2cmp(obj)
         if i == 0:
-            max_obj = [ obj ]
+            max_obj = [obj]
             max_val = v
         else:                
             if reverse:
