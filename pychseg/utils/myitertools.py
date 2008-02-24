@@ -23,9 +23,9 @@
 #SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-def takemost(val2cmp, iterable, reverse=True):
+def takehighest(iterable, key, reverse=True):
     """
-    >>> takemost(lambda x:x/2, [9,3,4,1,4,9,2,8])
+    >>> takehighest(lambda x:x/2, [9,3,4,1,4,9,2,8])
     [9, 9, 8]
     """    
     for i, obj in enumerate(iterable):
@@ -47,7 +47,7 @@ def takemost(val2cmp, iterable, reverse=True):
     
 """ concept implementation
 from itertools import takewhile
-def takemost(val2cmp, iterable, reverse=True):    
+def takehighest(key, iterable, reverse=True):    
     val = map(val2cmp, iterable)
     sorted_val = sorted( enumerate(val), lambda x,y: cmp(x[1],y[1]), reverse=reverse )
     most_val = takewhile(lambda x:x[1]==sorted_val[0][1], sorted_val)
@@ -55,6 +55,9 @@ def takemost(val2cmp, iterable, reverse=True):
     
     return most_result
 """
+
+def iterlen(iterable):
+    return len([i for i in iterable])
 
 def joindict(dict1, dict2):
     """

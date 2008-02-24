@@ -24,7 +24,7 @@
 #SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-from pychseg.utils.myitertools import takemost 
+from pychseg.utils.myitertools import takehighest 
 
 def filter(chunks):
     """
@@ -38,7 +38,7 @@ def filter(chunks):
     >>> r[0] == first
     True
     """    
-    return takemost(lambda x:x.reverseLen(), chunks)
+    return takehighest(chunks, lambda x:x.reverseLen())
 
 def _test():
     import doctest
