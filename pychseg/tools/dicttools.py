@@ -79,12 +79,12 @@ def find_next_freeid(pos):
             return i
     
     return 0
-
+index = {}
 # 依次设置level1节点的子节点    
-for node1 in sortdk1:    
+for node1 in filter(lambda x: len(x[1])>1 or len(x[1][0])>1 ,sortdk1):    
     #node1 = sortdk1[0]
     nodes2 = filter(lambda x:x[0][0]==node1[0], sortdk2)
-    if not len(nodes2): continue
+    
     #sum( map(lambda x:1 << x[0][1], nodes2) )
     nodes2_v = map(lambda x:x[0][1], nodes2)
     
@@ -99,22 +99,65 @@ for node1 in sortdk1:
     print "    %s" % result
     base[node1[0]] = result
     for node2 in nodes2_v:
+        #TODO: index[()] here should index[(1,0)] = ?
         check[result + node2] = result        
     minfreeid = find_next_freeid(minfreeid)
     print "    %s" % minfreeid
-        
+
+#print allkeyword        
+print base[:100]
+print check[:100]
         
 # 依次设置level2节点的子节点    
-for node2 in sortdk2:    
+for node2 in filter(lambda x: len(x[1])>1 or len(x[1][0])>2 ,sortdk2):    
     nodes3 = filter(lambda x:x[0][:2]==node2[0], sortdk3)
-    for node3 in nodes3:
-        print "    ", node3[0]
+    
+    nodes3_v = map(lambda x:x[0][1], nodes3)
+
+    print node2[0]
+    guess_node = minfreeid - nodes3_v[0]
+    while 1:        
+        result = guess_base_position(guess_node, nodes3_v)
+        if result:
+            break
+        guess_node = guess_node + 1
+    
+    print "    %s" % result
+    base[node2[0][1]] = result
+    for node3 in nodes3_v:
+        check[result + node3] = result        
+    minfreeid = find_next_freeid(minfreeid)
+    print "    %s" % minfreeid
+    
+#print allkeyword        
+print base[:100]
+print check[:100]
 
 # 依次设置level3节点的子节点        
-for node3 in sortdk3:    
+for node3 in filter(lambda x: len(x[1])>1 or len(x[1][0])>3 ,sortdk3):    
     nodes4 = filter(lambda x:x[0][:3]==node3[0], sortdk4)
-    for node4 in nodes4:
-        print "      ", node4[0]
+    
+    nodes4_v = map(lambda x:x[0][1], nodes4)
+
+    print node3[0]
+    guess_node = minfreeid - nodes4_v[0]
+    while 1:        
+        result = guess_base_position(guess_node, nodes4_v)
+        if result:
+            break
+        guess_node = guess_node + 1
+    
+    print "    %s" % result
+    base[node3[0][2]] = result
+    for node4 in nodes4_v:
+        check[result + node4] = result        
+    minfreeid = find_next_freeid(minfreeid)
+    print "    %s" % minfreeid
+
+#print allkeyword        
+print base[:100]
+print check[:100]
+    
 
 # 不必处理level4节点了
 
