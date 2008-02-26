@@ -77,7 +77,7 @@ for i in range(longest-1):
         subnodes = filter(lambda x:x[0][:i+1]==node[0], sort_keys[i+1])
         subnodes_v = map(lambda x:x[0][i+1], subnodes)
 
-        print node[0]
+        #print node[0]
         guess_node = minfreeid - subnodes_v[0]
         while 1:        
             result = guess_base_position(guess_node, subnodes_v)
@@ -85,169 +85,25 @@ for i in range(longest-1):
                 break
             guess_node = guess_node + 1
         
-        print "    %s" % result 
+        #print "    %s" % result 
         base_s = index[tuple(node[0])] 
         base[ base_s ] = result
         for subnode in subnodes_v:
             check[result + subnode] = base_s
             index[tuple(node[0] + [subnode])] = result+subnode        
         minfreeid = find_next_freeid(minfreeid)
-        print "    %s" % minfreeid
+        #print "    %s" % minfreeid
 
-    print base[:100]
-    print check[:100]
-    
+# TODO: if a word end, set negative value
 
-"""
-base = [0] * 200000 # big enough
-check = [0] * 200000 # big enough
-
-
-# 排列每一级的节点个数
-# level 1 node 131292/12683 1543->1
-dictkey1 = dictkey
-sortdk1 = [(k,list(g)) for k,g in groupby( sorted(dictkey1, lambda x,y:cmp(x[0],y[0])), lambda x:x[0] )]
-sortdk1 = sorted(sortdk1, lambda x,y:cmp(len(y[1]),len(x[1])))
-
-# level 2 node 118654/86907 67->1
-dictkey2 = filter(lambda x:len(x)>1,dictkey)
-sortdk2 = [(k,list(g)) for k,g in groupby( sorted(dictkey2, lambda x,y:cmp(x[:2],y[:2])), lambda x:x[:2] )]
-sortdk2 = sorted(sortdk2, lambda x,y:cmp(len(y[1]),len(x[1])))
-
-# level 3 node 45269/43063 13->1
-dictkey3 = filter(lambda x:len(x)>2,dictkey)
-sortdk3 = [(k,list(g)) for k,g in groupby( sorted(dictkey3, lambda x,y:cmp(x[:3],y[:3])), lambda x:x[:3] )]
-sortdk3 = sorted(sortdk3, lambda x,y:cmp(len(y[1]),len(x[1])))
-
-# level 4 node 25869/25869 1->1
-dictkey4 = filter(lambda x:len(x)>3,dictkey)
-sortdk4 = [(k,list(g)) for k,g in groupby( sorted(dictkey4, lambda x,y:cmp(x[:4],y[:4])), lambda x:x[:4] )]
-sortdk4 = sorted(sortdk4, lambda x,y:cmp(len(y[1]),len(x[1])))
-
-
-# 依次设置level1节点的子节点    
-for node1 in filter(lambda x: len(x[1])>1 or len(x[1][0])>1 ,sortdk1):    
-    #node1 = sortdk1[0]
-    nodes2 = filter(lambda x:x[0][0]==node1[0], sortdk2)
-    
-    #sum( map(lambda x:1 << x[0][1], nodes2) )
-    nodes2_v = map(lambda x:x[0][1], nodes2)
-    
-    print node1[0]
-    guess_node = minfreeid - nodes2_v[0]
-    while 1:        
-        result = guess_base_position(guess_node, nodes2_v)
-        if result:
-            break
-        guess_node = guess_node + 1
-    
-    print "    %s" % result
-    base[node1[0]] = result
-    for node2 in nodes2_v:
-        #TODO: index[()] here should index[(1,0)] = ?
-        check[result + node2] = result        
-    minfreeid = find_next_freeid(minfreeid)
-    print "    %s" % minfreeid
-
-
-
-#print allkeyword        
-print base[:100]
-print check[:100]
-        
-# 依次设置level2节点的子节点    
-for node2 in filter(lambda x: len(x[1])>1 or len(x[1][0])>2 ,sortdk2):    
-    nodes3 = filter(lambda x:x[0][:2]==node2[0], sortdk3)
-    
-    nodes3_v = map(lambda x:x[0][1], nodes3)
-
-    print node2[0]
-    guess_node = minfreeid - nodes3_v[0]
-    while 1:        
-        result = guess_base_position(guess_node, nodes3_v)
-        if result:
-            break
-        guess_node = guess_node + 1
-    
-    print "    %s" % result
-    base[node2[0][1]] = result
-    for node3 in nodes3_v:
-        check[result + node3] = result        
-    minfreeid = find_next_freeid(minfreeid)
-    print "    %s" % minfreeid
-    
-#print allkeyword        
-print base[:100]
-print check[:100]
-
-# 依次设置level3节点的子节点        
-for node3 in filter(lambda x: len(x[1])>1 or len(x[1][0])>3 ,sortdk3):    
-    nodes4 = filter(lambda x:x[0][:3]==node3[0], sortdk4)
-    
-    nodes4_v = map(lambda x:x[0][1], nodes4)
-
-    print node3[0]
-    guess_node = minfreeid - nodes4_v[0]
-    while 1:        
-        result = guess_base_position(guess_node, nodes4_v)
-        if result:
-            break
-        guess_node = guess_node + 1
-    
-    print "    %s" % result
-    base[node3[0][2]] = result
-    for node4 in nodes4_v:
-        check[result + node4] = result        
-    minfreeid = find_next_freeid(minfreeid)
-    print "    %s" % minfreeid
-
-#print allkeyword        
 print base[:100]
 print check[:100]
     
+# query
+def query():
+    pass
+    
 
-# 不必处理level4节点了
-
-##################################
-
-#all the keys 131292 first word
-dictkey1 = map(lambda x:x[0], dictkey)
-# turn to int
-#dictkey1 = map(ord, dictkey1)
-# group and sort, got 12683 unique key and freq.
-sortdk1 = [(k,len(list(g))) for k,g in groupby(sorted(dictkey1))]
-# sort by freq. 1543->1
-sortdk1 = sorted(sortdk1, lambda x,y:cmp(y[1],x[1]))    
-
-#all the 118654 key first 2 words
-dictkey2 = map(lambda x:(x[0],x[1]), filter(lambda x:len(x)>1,dictkey))
-# turn to int
-#dictkey2=map(lambda x: (ord(x[0]) << 16) + ord(x[1])  ,dictkey2)
-# group and sort, got 86907 unique key and freq.
-sortdk2 = [(k,len(list(g))) for k,g in groupby(sorted(dictkey2))]
-# sort by freq. 67 -> 1
-sortdk2  = sorted(sortdk2, lambda x,y:cmp(y[1],x[1]))    
-
-#all the 45269 key first 3 words
-dictkey3 = map(lambda x:(x[0],x[1],x[2]), filter(lambda x:len(x)>2,dictkey))
-#dictkey3=map(lambda x: (ord(x[0]) << 32) + (ord(x[1]) << 16) + ord(x[2])  ,dictkey3)
-# group and sort, got 43063 unique key and freq.
-sortdk3 = [(k,len(list(g))) for k,g in groupby(sorted(dictkey3))]
-# sort by freq. 13 -> 1
-sortdk3  = sorted(sortdk3, lambda x,y:cmp(y[1],x[1]))
-
-#all the 25869 key first 4 words
-dictkey4 = map(lambda x:(x[0],x[1],x[2],x[3]), filter(lambda x:len(x)>3,dictkey))
-#dictkey4=map(lambda x: (ord(x[0]) << 48) + (ord(x[1]) << 32) + (ord(x[2]) << 16) + ord(x[3])  ,dictkey4)
-sortdk4 = [(k,len(list(g))) for k,g in groupby(sorted(dictkey4))]
-# sort by freq. 1 -> 1
-sortdk4  = sorted(sortdk4, lambda x,y:cmp(y[1],x[1]))
-"""
-
-
-
-#base = map(lambda x:x[0], allkeyword)
-#check = [0] * len(base)
 
 
 
