@@ -27,15 +27,81 @@ allkeyword = sorted(allkeyword, lambda x,y:cmp(y[1],x[1]))
 # set map key dict ref.
 unicode2sequence = [0] * 65535
 for i, b in enumerate(allkeyword):
-    unicode2sequence[b[0]] = i
+    unicode2sequence[b[0]] = i    
     
 # 这里应该把所有的词都转换为seq id    
 #dictkey_seq = map(lambda y: u''.join( map(unichr, map(lambda x:unicode2sequence[ord(x)], y)) ), dictkey)
 
 dictkey_seq = map(lambda y: map(lambda x:unicode2sequence[ord(x)], y), dictkey)
-
 dictkey = dictkey_seq
+# dictkey 格式 ---
+#   [[a,b,c],[d,e],[]]
+
 ##################################
+longest = len(dictlen)
+sort_keys = []
+for i in range(longest):
+    tempkey = filter(lambda x:len(x)>i, dictkey)
+    sortdk = [(k,list(g)) for k,g in groupby( sorted(tempkey, lambda x,y:cmp(x[:i+1],y[:i+1])), lambda x:x[:i+1] )]
+    sortdk = sorted(sortdk, lambda x,y:cmp(len(y[1]),len(x[1])))
+    # sortdk 格式 ---
+    #  [ ( [a], [ [a,b], [a,c] ... ] ), ...
+    sort_keys.append(sortdk)
+
+base = [0] * 200000 # big enough
+check = [0] * 200000 # big enough
+# 初始化level1节点
+#for node1 in sortdk1:
+#    base[ord(node1[0])] = 0
+index = {}
+for i in range( len(allkeyword) ):
+    index[(i,)] = i
+minfreeid = len(allkeyword)    
+    
+def guess_base_position(base_pos, nodes):
+    for node in nodes:
+        if base[base_pos+node] != 0 or check[base_pos+node] != 0:
+            return 0
+        
+    return base_pos
+
+def find_next_freeid(pos):
+    for i in range(pos+1, len(base)):
+        if base[i] == 0 and check[i] == 0:
+            return i
+    
+    return 0
+
+for i in range(longest-1):
+    for node in filter(lambda x: len(x[1])>1 or len(x[1][0])>i+1, sort_keys[i]):
+        subnodes = filter(lambda x:x[0][:i+1]==node[0], sort_keys[i+1])
+        subnodes_v = map(lambda x:x[0][i+1], subnodes)
+
+        print node[0]
+        guess_node = minfreeid - subnodes_v[0]
+        while 1:        
+            result = guess_base_position(guess_node, subnodes_v)
+            if result:
+                break
+            guess_node = guess_node + 1
+        
+        print "    %s" % result 
+        base_s = index[tuple(node[0])] 
+        base[ base_s ] = result
+        for subnode in subnodes_v:
+            check[result + subnode] = base_s
+            index[tuple(node[0] + [subnode])] = result+subnode        
+        minfreeid = find_next_freeid(minfreeid)
+        print "    %s" % minfreeid
+
+    print base[:100]
+    print check[:100]
+    
+
+"""
+base = [0] * 200000 # big enough
+check = [0] * 200000 # big enough
+
 
 # 排列每一级的节点个数
 # level 1 node 131292/12683 1543->1
@@ -58,28 +124,7 @@ dictkey4 = filter(lambda x:len(x)>3,dictkey)
 sortdk4 = [(k,list(g)) for k,g in groupby( sorted(dictkey4, lambda x,y:cmp(x[:4],y[:4])), lambda x:x[:4] )]
 sortdk4 = sorted(sortdk4, lambda x,y:cmp(len(y[1]),len(x[1])))
 
-base = [0] * 200000 # big enough
-check = [0] * 200000 # big enough
-# 初始化level1节点
-#for node1 in sortdk1:
-#    base[ord(node1[0])] = 0
 
-minfreeid = len(allkeyword)
-
-def guess_base_position(base_pos, nodes):
-    for node in nodes:
-        if base[base_pos+node] != 0 or check[base_pos+node] != 0:
-            return 0
-        
-    return base_pos
-
-def find_next_freeid(pos):
-    for i in range(pos+1, len(base)):
-        if base[i] == 0 and check[i] == 0:
-            return i
-    
-    return 0
-index = {}
 # 依次设置level1节点的子节点    
 for node1 in filter(lambda x: len(x[1])>1 or len(x[1][0])>1 ,sortdk1):    
     #node1 = sortdk1[0]
@@ -103,6 +148,8 @@ for node1 in filter(lambda x: len(x[1])>1 or len(x[1][0])>1 ,sortdk1):
         check[result + node2] = result        
     minfreeid = find_next_freeid(minfreeid)
     print "    %s" % minfreeid
+
+
 
 #print allkeyword        
 print base[:100]
@@ -163,7 +210,6 @@ print check[:100]
 
 ##################################
 
-"""
 #all the keys 131292 first word
 dictkey1 = map(lambda x:x[0], dictkey)
 # turn to int
