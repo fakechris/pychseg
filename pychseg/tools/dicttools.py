@@ -5,7 +5,8 @@ from itertools import groupby
 
 #dictdata = load_dict()
 #dictkey = dictdata.keys()
-dictkey = [u'a', u'bc', u'def', u'ghab', u'cab', u'cb', u'caef', u'caeg']
+dictkey = [u'a', u'bc', u'def', u'ghab', u'cab', u'cb', u'caef', u'caeg', u'gh',u'dhabcd']
+
 org_dictkey = dictkey
 
 # 统计几个字母的长度的词的分布
@@ -27,7 +28,7 @@ allkeyword = sorted(allkeyword, lambda x,y:cmp(y[1],x[1]))
 # set map key dict ref.
 unicode2sequence = [0] * 65535
 for i, b in enumerate(allkeyword):
-    unicode2sequence[b[0]] = i    
+    unicode2sequence[b[0]] = i+1    
     
 # 这里应该把所有的词都转换为seq id    
 #dictkey_seq = map(lambda y: u''.join( map(unichr, map(lambda x:unicode2sequence[ord(x)], y)) ), dictkey)
@@ -38,7 +39,7 @@ dictkey = dictkey_seq
 #   [[a,b,c],[d,e],[]]
 
 ##################################
-longest = len(dictlen)
+longest = dictlen[-1][0]
 sort_keys = []
 for i in range(longest):
     tempkey = filter(lambda x:len(x)>i, dictkey)
@@ -73,7 +74,11 @@ def find_next_freeid(pos):
     return 0
 
 for i in range(longest-1):
+    print "round ", i
     for node in filter(lambda x: len(x[1])>1 or len(x[1][0])>i+1, sort_keys[i]):
+        print u' '*i + u''.join( map(unichr, map(lambda x:allkeyword[x-1][0], node[0])) )
+        # node[0] -- this node
+        # node[1] -- list of children nodes
         subnodes = filter(lambda x:x[0][:i+1]==node[0], sort_keys[i+1])
         subnodes_v = map(lambda x:x[0][i+1], subnodes)
 
@@ -86,24 +91,56 @@ for i in range(longest-1):
             guess_node = guess_node + 1
         
         #print "    %s" % result 
-        base_s = index[tuple(node[0])] 
-        base[ base_s ] = result
+        base_s = index[tuple(node[0])]
+        # if base_s is already a word, set negtive value
+        if  base[ base_s ] < 0:            
+            base[ base_s ] = -result
+        else:
+            base[ base_s ] = result
         for subnode in subnodes_v:
             check[result + subnode] = base_s
-            index[tuple(node[0] + [subnode])] = result+subnode        
+            index[tuple(node[0] + [subnode])] = result+subnode      
+            # if subnode is a word, set negtive value (leaf node)  
+            if node[0] + [subnode] in node[1]:
+                base[result + subnode] = -(result + subnode)
         minfreeid = find_next_freeid(minfreeid)
         #print "    %s" % minfreeid
 
-# TODO: if a word end, set negative value
 
 print base[:100]
 print check[:100]
     
 # query
-def query():
-    pass
+def query(text):
+    # first convert input to seq.
+    text_seq = map(lambda x:unicode2sequence[ord(x)], text)
     
+    s = text_seq[0]
+    for char in text_seq[1:]:
+        t = abs(base[s]) + char        
+        if check[t] == s:
+            s = t
+            continue
+        else:
+            return False
+    if base[s] < 0:
+        return True
+    else:
+        return False
+    
+# correct
+print '...'
+for char in [u'a', u'bc', u'def', u'ghab', u'cab', u'cb', u'caef', u'caeg', u'gh',u'dhabcd']:
+    print query(char)
+print '...'
+for char in [u'ab', u'bcd', u'de', u'dha', u'cae', u'cabe']:
+    print query(char)
+print '...'    
 
+# TODO: insert and delete nodes
+def insert(word):
+    word_seq = map(lambda x:unicode2sequence[ord(x)], word)
+    # 
 
-
-
+def delete(word):
+    word_seq = map(lambda x:unicode2sequence[ord(x)], word)
