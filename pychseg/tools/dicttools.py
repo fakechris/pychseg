@@ -67,7 +67,11 @@ class DoubleArrayTrie(dict):
                 
         print self.base[:100]
         print self.check[:100]
-    
+    ##
+    # @param current_node Current base node list, eg. [1,2]
+    # @param subnodes_word_list All words followed by this node [[1,2,3],[1,2,4]..]
+    # @param subnodes All possible node  
+    #
     def add_subnodes(self, current_node, subnodes_word_list, subnodes):
         guess_node = self.minfreeid - subnodes[0]
         while 1:        
@@ -90,24 +94,40 @@ class DoubleArrayTrie(dict):
             if current_node + [subnode] in subnodes_word_list:
                 self.base[result + subnode] = -(result + subnode)
         self.minfreeid = self.find_next_freeid()
+        return result
             
     def __setitem__(self, key, value):
         key_seq = map(lambda x:self.unicode2sequence[ord(x)], key)    
     
         s = key_seq[0]
-        for char in key_seq[1:]:
-            t = abs(self.base[s]) + char
-            if self.check[t] == s:
-                s = t
-                continue
-            else:
-                break
-            
-        # 最终节点，直接查找一个插入点
-        if self.base[s]+s == 0:
-            self.add_subnodes(current_node, subnodes_word_list, subnodes)
-        else: # 需要查找所有子节点和本节点是否冲突，若冲突则全部子节点需要重新定位
-            pass
+        add_mode = 1
+        for i, char in enumerate(key_seq[1:]):
+            if add_mode == 1:
+                t = abs(self.base[s]) + char
+                if self.check[t] == s:
+                    s = t
+                    continue
+                else:
+                    add_mode = 2
+                    
+            current_node = key_seq[:i+1]                      
+            if add_mode == 2:                      
+                # 最终节点，直接查找一个插入点
+                if self.base[s]+s == 0:                    
+                    subnodes = [char]
+                    s = self.add_subnodes(current_node, [key_seq], subnodes) + char                    
+                else: # 需要查找所有子节点和本节点是否冲突，若冲突则全部子节点需要重新定位
+                    t = abs(self.base[s]) + char
+                    if self.base[t]==0 and self.check[t]==0: # 不冲突
+                        # TODO: 设置check等
+                        self.check[t] = s
+                    else: # TODO:冲突，需要解决冲突，重定位所有的subnode                    
+                        subnodes = [char] + self.find_all_subnodes(self.base[s])
+                        s = self.add_subnodes(current_node, [key_seq], subnodes) + char
+                add_mode = 3
+            elif add_mode == 3:
+                subnodes = [char]                
+                s = self.add_subnodes(current_node, [key_seq], subnodes) + char
             
     def __delitem__(self, key):
         key_seq = map(lambda x:self.unicode2sequence[ord(x)], key)
@@ -150,6 +170,9 @@ class DoubleArrayTrie(dict):
         else:
             return False
 
+    def find_all_subnodes(self, base_node):
+        return filter( lambda x:self.check[base_node+x]==base_node, range(len(self.allkeyword)) )
+
     def guess_base_position(self, base_pos, nodes):
         for node in nodes:
             if self.base[base_pos+node] != 0 or self.check[base_pos+node] != 0:
@@ -190,6 +213,11 @@ if __name__ == "__main__":
     del dat[u'caef']
     print dat[u'caef']
     print dat[u'caeg']
-    print '...'
-    
+    print  '...'
+    dat[u'bcde'] = 1
+    print dat[u'bcde']
+    print dat[u'bc']
+    dat[u'gabc'] = 1
+    print dat[u'gabc']
+        
     
