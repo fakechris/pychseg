@@ -3,7 +3,7 @@
 from pychseg.mmseg.worddict import load_dict
 from itertools import groupby
 
-class DoubleArrayTrie(dict):
+class DoubleArrayTrie:
     def __init__(self):
         self.keys = self.keys_group = self.allkeyword = None
         self.unicode2sequence = None
@@ -29,11 +29,11 @@ class DoubleArrayTrie(dict):
         
         # 每个unicode --> sequence的索引
         self.unicode2sequence = [0] * 65535
-        for i, b in enumerate(allkeyword):
+        for i, b in enumerate(self.allkeyword):
             self.unicode2sequence[b[0]] = i+1    
 
         # 转换为seq的所有词表
-        self.seqkeys = map(lambda y: map(lambda x:self.unicode2sequence[ord(x)], y), keys)
+        self.seqkeys = map(lambda y: self.get_sequence(y), keys)
         
         # 最长的词长度
         longest = self.keys_group[-1][0]
@@ -55,9 +55,8 @@ class DoubleArrayTrie(dict):
 
         # 依次加入trie
         for i in range(longest-1):
-            print "round ", i
-            for node in filter(lambda x: len(x[1])>1 or len(x[1][0])>i+1, sort_keys[i]):
-                print u' '*i + u''.join( map(unichr, map(lambda x:self.allkeyword[x-1][0], node[0])) )
+            print "round ", i+1
+            for node in filter(lambda x: len(x[1])>1 or len(x[1][0])>i+1, sort_keys[i]):                
                 # node[0] -- this node
                 # node[1] -- list of children nodes
                 subnodes = filter(lambda x:x[0][:i+1]==node[0], sort_keys[i+1])
@@ -67,12 +66,14 @@ class DoubleArrayTrie(dict):
                 
         print self.base[:100]
         print self.check[:100]
+        
     ##
     # @param current_node Current base node list, eg. [1,2]
     # @param subnodes_word_list All words followed by this node [[1,2,3],[1,2,4]..]
     # @param subnodes All possible node  
     #
     def add_subnodes(self, current_node, subnodes_word_list, subnodes):
+        print self.get_unicode(current_node) + u' ' + self.get_unicode(subnodes)
         guess_node = self.minfreeid - subnodes[0]
         while 1:        
             result = self.guess_base_position(guess_node, subnodes)
@@ -97,7 +98,7 @@ class DoubleArrayTrie(dict):
         return result
             
     def __setitem__(self, key, value):
-        key_seq = map(lambda x:self.unicode2sequence[ord(x)], key)    
+        key_seq = self.get_sequence(key)    
     
         s = key_seq[0]
         add_mode = 1
@@ -118,19 +119,22 @@ class DoubleArrayTrie(dict):
                     s = self.add_subnodes(current_node, [key_seq], subnodes) + char                    
                 else: # 需要查找所有子节点和本节点是否冲突，若冲突则全部子节点需要重新定位
                     t = abs(self.base[s]) + char
-                    if self.base[t]==0 and self.check[t]==0: # 不冲突
+                    if self.base[t]==0 and self.check[t]==0 and t>len(allkeyword): # 不冲突
                         # TODO: 设置check等
                         self.check[t] = s
-                    else: # TODO:冲突，需要解决冲突，重定位所有的subnode                    
-                        subnodes = [char] + self.find_all_subnodes(self.base[s])
-                        s = self.add_subnodes(current_node, [key_seq], subnodes) + char
+                    else: # TODO:冲突，需要解决冲突，重定位所有的subnode            
+                        old_s = s
+                        old_nodes = self.find_all_subnodes(s)                          
+                        s = self.add_subnodes(current_node, [key_seq], [char] + old_nodes) + char
+                        for old_node in old_nodes:
+                            self.base[s-char+old_node] = self.base[t-char+old_node]
                 add_mode = 3
             elif add_mode == 3:
                 subnodes = [char]                
                 s = self.add_subnodes(current_node, [key_seq], subnodes) + char
             
     def __delitem__(self, key):
-        key_seq = map(lambda x:self.unicode2sequence[ord(x)], key)
+        key_seq = self.get_sequence(key)
         
         s = key_seq[0]
         for char in key_seq[1:]:
@@ -154,7 +158,7 @@ class DoubleArrayTrie(dict):
                 
     def __getitem__(self, key):
         # first convert input to seq.
-        text_seq = map(lambda x:self.unicode2sequence[ord(x)], key)
+        text_seq = self.get_sequence(key)
         
         # then query it
         s = text_seq[0]
@@ -169,9 +173,12 @@ class DoubleArrayTrie(dict):
             return True
         else:
             return False
+        
+    def __iter__(self):
+        return self.foreach()
 
     def find_all_subnodes(self, base_node):
-        return filter( lambda x:self.check[base_node+x]==base_node, range(len(self.allkeyword)) )
+        return filter( lambda x:self.check[self.base[base_node]+x]==base_node, range(len(self.allkeyword)) )
 
     def guess_base_position(self, base_pos, nodes):
         for node in nodes:
@@ -187,6 +194,23 @@ class DoubleArrayTrie(dict):
         
         return 0
 
+    def foreach(self):
+        for i,v in enumerate(self.base):
+            if v < 0: # is a word
+                nexti = self.check[i]
+                result = [ i- abs(self.base[nexti]) ]                
+                while nexti != 0:
+                    result.append(nexti-abs(self.base[self.check[nexti]]))
+                    nexti = self.check[nexti]
+                result.reverse()
+                yield result
+    
+    def get_sequence(self, uniword):
+        return map(lambda x:self.unicode2sequence[ord(x)], uniword)
+    
+    def get_unicode(self, seqlist):  
+        return u''.join( map(unichr, map(lambda x:self.allkeyword[x-1][0], seqlist)) )
+
 def _test():
     import doctest
     doctest.testmod()
@@ -197,6 +221,10 @@ if __name__ == "__main__":
     dat = DoubleArrayTrie()
     #dictdata = load_dict()
     dat.setitems(dictkey, None)
+    
+    for i in dat:
+        print dat.get_unicode(i)
+    
     print '...'
     for char in [u'a', u'bc', u'def', u'ghab', u'cab', u'cb', u'caef', u'caeg', u'gh',u'dhabcd']:
         print dat[char]
@@ -218,6 +246,12 @@ if __name__ == "__main__":
     print dat[u'bcde']
     print dat[u'bc']
     dat[u'gabc'] = 1
-    print dat[u'gabc']
+    print dat[u'gabc']    
+    print dat[u'ghab']
+    dat[u'gbbc'] = 1
+    print dat[u'gbbc']
+    dat[u'gcbc'] = 1
+    print dat[u'gcbc']
+    
         
     
