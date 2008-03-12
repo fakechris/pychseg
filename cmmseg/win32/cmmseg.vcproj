@@ -196,6 +196,18 @@
 			>
 		</Filter>
 		<File
+			RelativePath="..\swig\pydarts.i"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="swig -c++ -python pydarts.i"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath=".\ReadMe.txt"
 			>
 		</File>
