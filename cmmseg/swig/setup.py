@@ -7,7 +7,7 @@ setup.py file for SWIG example
 from distutils.core import setup, Extension
 
 pydarts_module = Extension('_pydarts',
-                           sources=['pydarts_wrap.cxx'],
+                           sources=['pydarts_wrap.cxx',"pydarts.cpp"],
                            )
 
 setup (name = 'pydarts',

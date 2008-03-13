@@ -48,5 +48,28 @@ except AttributeError:
 del types
 
 
+class DoubleArray(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DoubleArray, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, DoubleArray, name)
+    __repr__ = _swig_repr
+    def __init__(self, *args): 
+        this = _pydarts.new_DoubleArray(*args)
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _pydarts.delete_DoubleArray
+    __del__ = lambda self : None;
+    def clear(*args): return _pydarts.DoubleArray_clear(*args)
+    def unit_size(*args): return _pydarts.DoubleArray_unit_size(*args)
+    def size(*args): return _pydarts.DoubleArray_size(*args)
+    def total_size(*args): return _pydarts.DoubleArray_total_size(*args)
+    def nonzero_size(*args): return _pydarts.DoubleArray_nonzero_size(*args)
+    def build(*args): return _pydarts.DoubleArray_build(*args)
+    def save(*args): return _pydarts.DoubleArray_save(*args)
+    def traverse(*args): return _pydarts.DoubleArray_traverse(*args)
+DoubleArray_swigregister = _pydarts.DoubleArray_swigregister
+DoubleArray_swigregister(DoubleArray)
+
 
 

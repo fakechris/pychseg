@@ -263,7 +263,7 @@ namespace Darts {
     }
 
     int build(size_t     key_size,
-              key_type   **key,
+              char **key,
               size_t     *length = 0,
               value_type *value = 0,
               int (*progress_func)(size_t, size_t) = 0) {

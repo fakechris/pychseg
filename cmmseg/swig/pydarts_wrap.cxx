@@ -2495,9 +2495,14 @@ SWIG_Python_MustGetPtr(PyObject *obj, swig_type_info *ty, int argnum, int flags)
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define SWIGTYPE_p_char swig_types[0]
-static swig_type_info *swig_types[2];
-static swig_module_info swig_module = {swig_types, 1, 0, 0, 0, 0};
+#define SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t swig_types[0]
+#define SWIGTYPE_p_char swig_types[1]
+#define SWIGTYPE_p_f_size_t_size_t__int swig_types[2]
+#define SWIGTYPE_p_int swig_types[3]
+#define SWIGTYPE_p_p_char swig_types[4]
+#define SWIGTYPE_p_size_t swig_types[5]
+static swig_type_info *swig_types[7];
+static swig_module_info swig_module = {swig_types, 6, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2587,29 +2592,1272 @@ namespace swig {
 }
 
 
-#define SWIG_FILE_WITH_INIT
 #include "darts.h"
+
+
+  #define SWIG_From_long   PyInt_FromLong 
+
+
+SWIGINTERNINLINE PyObject* 
+SWIG_From_unsigned_SS_long  (unsigned long value)
+{
+  return (value > LONG_MAX) ?
+    PyLong_FromUnsignedLong(value) : PyInt_FromLong(static_cast< long >(value)); 
+}
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_From_size_t  (size_t value)
+{    
+  return SWIG_From_unsigned_SS_long  (static_cast< unsigned long >(value));
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_double (PyObject *obj, double *val)
+{
+  int res = SWIG_TypeError;
+  if (PyFloat_Check(obj)) {
+    if (val) *val = PyFloat_AsDouble(obj);
+    return SWIG_OK;
+  } else if (PyInt_Check(obj)) {
+    if (val) *val = PyInt_AsLong(obj);
+    return SWIG_OK;
+  } else if (PyLong_Check(obj)) {
+    double v = PyLong_AsDouble(obj);
+    if (!PyErr_Occurred()) {
+      if (val) *val = v;
+      return SWIG_OK;
+    } else {
+      PyErr_Clear();
+    }
+  }
+#ifdef SWIG_PYTHON_CAST_MODE
+  {
+    int dispatch = 0;
+    double d = PyFloat_AsDouble(obj);
+    if (!PyErr_Occurred()) {
+      if (val) *val = d;
+      return SWIG_AddCast(SWIG_OK);
+    } else {
+      PyErr_Clear();
+    }
+    if (!dispatch) {
+      long v = PyLong_AsLong(obj);
+      if (!PyErr_Occurred()) {
+	if (val) *val = v;
+	return SWIG_AddCast(SWIG_AddCast(SWIG_OK));
+      } else {
+	PyErr_Clear();
+      }
+    }
+  }
+#endif
+  return res;
+}
+
+
+#include <float.h>
+
+
+#include <math.h>
+
+
+SWIGINTERNINLINE int
+SWIG_CanCastAsInteger(double *d, double min, double max) {
+  double x = *d;
+  if ((min <= x && x <= max)) {
+   double fx = floor(x);
+   double cx = ceil(x);
+   double rd =  ((x - fx) < 0.5) ? fx : cx; /* simple rint */
+   if ((errno == EDOM) || (errno == ERANGE)) {
+     errno = 0;
+   } else {
+     double summ, reps, diff;
+     if (rd < x) {
+       diff = x - rd;
+     } else if (rd > x) {
+       diff = rd - x;
+     } else {
+       return 1;
+     }
+     summ = rd + x;
+     reps = diff/summ;
+     if (reps < 8*DBL_EPSILON) {
+       *d = rd;
+       return 1;
+     }
+   }
+  }
+  return 0;
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_unsigned_SS_long (PyObject *obj, unsigned long *val) 
+{
+  if (PyInt_Check(obj)) {
+    long v = PyInt_AsLong(obj);
+    if (v >= 0) {
+      if (val) *val = v;
+      return SWIG_OK;
+    } else {
+      return SWIG_OverflowError;
+    }
+  } else if (PyLong_Check(obj)) {
+    unsigned long v = PyLong_AsUnsignedLong(obj);
+    if (!PyErr_Occurred()) {
+      if (val) *val = v;
+      return SWIG_OK;
+    } else {
+      PyErr_Clear();
+    }
+  }
+#ifdef SWIG_PYTHON_CAST_MODE
+  {
+    int dispatch = 0;
+    unsigned long v = PyLong_AsUnsignedLong(obj);
+    if (!PyErr_Occurred()) {
+      if (val) *val = v;
+      return SWIG_AddCast(SWIG_OK);
+    } else {
+      PyErr_Clear();
+    }
+    if (!dispatch) {
+      double d;
+      int res = SWIG_AddCast(SWIG_AsVal_double (obj,&d));
+      if (SWIG_IsOK(res) && SWIG_CanCastAsInteger(&d, 0, ULONG_MAX)) {
+	if (val) *val = (unsigned long)(d);
+	return res;
+      }
+    }
+  }
+#endif
+  return SWIG_TypeError;
+}
+
+
+SWIGINTERNINLINE int
+SWIG_AsVal_size_t (PyObject * obj, size_t *val)
+{
+  unsigned long v;
+  int res = SWIG_AsVal_unsigned_SS_long (obj, val ? &v : 0);
+  if (SWIG_IsOK(res) && val) *val = static_cast< size_t >(v);
+  return res;
+}
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_From_int  (int value)
+{    
+  return SWIG_From_long  (value);
+}
+
+
+SWIGINTERN swig_type_info*
+SWIG_pchar_descriptor(void)
+{
+  static int init = 0;
+  static swig_type_info* info = 0;
+  if (!init) {
+    info = SWIG_TypeQuery("_p_char");
+    init = 1;
+  }
+  return info;
+}
+
+
+SWIGINTERN int
+SWIG_AsCharPtrAndSize(PyObject *obj, char** cptr, size_t* psize, int *alloc)
+{
+  if (PyString_Check(obj)) {
+    char *cstr; Py_ssize_t len;
+    PyString_AsStringAndSize(obj, &cstr, &len);
+    if (cptr)  {
+      if (alloc) {
+	/* 
+	   In python the user should not be able to modify the inner
+	   string representation. To warranty that, if you define
+	   SWIG_PYTHON_SAFE_CSTRINGS, a new/copy of the python string
+	   buffer is always returned.
+
+	   The default behavior is just to return the pointer value,
+	   so, be careful.
+	*/ 
+#if defined(SWIG_PYTHON_SAFE_CSTRINGS)
+	if (*alloc != SWIG_OLDOBJ) 
+#else
+	if (*alloc == SWIG_NEWOBJ) 
+#endif
+	  {
+	    *cptr = reinterpret_cast< char* >(memcpy((new char[len + 1]), cstr, sizeof(char)*(len + 1)));
+	    *alloc = SWIG_NEWOBJ;
+	  }
+	else {
+	  *cptr = cstr;
+	  *alloc = SWIG_OLDOBJ;
+	}
+      } else {
+	*cptr = PyString_AsString(obj);
+      }
+    }
+    if (psize) *psize = len + 1;
+    return SWIG_OK;
+  } else {
+    swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
+    if (pchar_descriptor) {
+      void* vptr = 0;
+      if (SWIG_ConvertPtr(obj, &vptr, pchar_descriptor, 0) == SWIG_OK) {
+	if (cptr) *cptr = (char *) vptr;
+	if (psize) *psize = vptr ? (strlen((char *)vptr) + 1) : 0;
+	if (alloc) *alloc = SWIG_OLDOBJ;
+	return SWIG_OK;
+      }
+    }
+  }
+  return SWIG_TypeError;
+}
+
+
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+SWIGINTERN PyObject *_wrap_new_DoubleArray(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_DoubleArray")) SWIG_fail;
+  result = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *)new Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int >();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_DoubleArray(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_DoubleArray",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_DoubleArray" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  delete arg1;
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_clear(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DoubleArray_clear",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_clear" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  (arg1)->clear();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_unit_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  size_t result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DoubleArray_unit_size",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_unit_size" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  result = (arg1)->unit_size();
+  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  size_t result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DoubleArray_size",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_size" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  result = (arg1)->size();
+  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_total_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  size_t result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DoubleArray_total_size",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_total_size" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > const *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  result = ((Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > const *)arg1)->total_size();
+  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_nonzero_size(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  size_t result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:DoubleArray_nonzero_size",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_nonzero_size" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > const *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  result = ((Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > const *)arg1)->nonzero_size();
+  resultobj = SWIG_From_size_t(static_cast< size_t >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_build__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  size_t arg2 ;
+  char **arg3 = (char **) 0 ;
+  size_t *arg4 = (size_t *) 0 ;
+  int *arg5 = (int *) 0 ;
+  int (*arg6)(size_t,size_t) = (int (*)(size_t,size_t)) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:DoubleArray_build",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_build" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DoubleArray_build" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj2)) {
+      int size = PyList_Size(obj2);
+      int i = 0;
+      arg3 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj2,i);
+        if (PyString_Check(o))
+        arg3[i] = PyString_AsString(PyList_GetItem(obj2,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg3);
+          return NULL;
+        }
+      }
+      arg3[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_size_t, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "DoubleArray_build" "', argument " "4"" of type '" "size_t *""'"); 
+  }
+  arg4 = reinterpret_cast< size_t * >(argp4);
+  res5 = SWIG_ConvertPtr(obj4, &argp5,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "DoubleArray_build" "', argument " "5"" of type '" "int *""'"); 
+  }
+  arg5 = reinterpret_cast< int * >(argp5);
+  {
+    int res = SWIG_ConvertFunctionPtr(obj5, (void**)(&arg6), SWIGTYPE_p_f_size_t_size_t__int);
+    if (!SWIG_IsOK(res)) {
+      SWIG_exception_fail(SWIG_ArgError(res), "in method '" "DoubleArray_build" "', argument " "6"" of type '" "int (*)(size_t,size_t)""'"); 
+    }
+  }
+  result = (int)(arg1)->build(arg2,arg3,arg4,arg5,arg6);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  {
+    free((char *) arg3);
+  }
+  return resultobj;
+fail:
+  {
+    free((char *) arg3);
+  }
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_build__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  size_t arg2 ;
+  char **arg3 = (char **) 0 ;
+  size_t *arg4 = (size_t *) 0 ;
+  int *arg5 = (int *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:DoubleArray_build",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_build" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DoubleArray_build" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj2)) {
+      int size = PyList_Size(obj2);
+      int i = 0;
+      arg3 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj2,i);
+        if (PyString_Check(o))
+        arg3[i] = PyString_AsString(PyList_GetItem(obj2,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg3);
+          return NULL;
+        }
+      }
+      arg3[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_size_t, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "DoubleArray_build" "', argument " "4"" of type '" "size_t *""'"); 
+  }
+  arg4 = reinterpret_cast< size_t * >(argp4);
+  res5 = SWIG_ConvertPtr(obj4, &argp5,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "DoubleArray_build" "', argument " "5"" of type '" "int *""'"); 
+  }
+  arg5 = reinterpret_cast< int * >(argp5);
+  result = (int)(arg1)->build(arg2,arg3,arg4,arg5);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  {
+    free((char *) arg3);
+  }
+  return resultobj;
+fail:
+  {
+    free((char *) arg3);
+  }
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_build__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  size_t arg2 ;
+  char **arg3 = (char **) 0 ;
+  size_t *arg4 = (size_t *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:DoubleArray_build",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_build" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DoubleArray_build" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj2)) {
+      int size = PyList_Size(obj2);
+      int i = 0;
+      arg3 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj2,i);
+        if (PyString_Check(o))
+        arg3[i] = PyString_AsString(PyList_GetItem(obj2,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg3);
+          return NULL;
+        }
+      }
+      arg3[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_size_t, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "DoubleArray_build" "', argument " "4"" of type '" "size_t *""'"); 
+  }
+  arg4 = reinterpret_cast< size_t * >(argp4);
+  result = (int)(arg1)->build(arg2,arg3,arg4);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  {
+    free((char *) arg3);
+  }
+  return resultobj;
+fail:
+  {
+    free((char *) arg3);
+  }
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_build__SWIG_3(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  size_t arg2 ;
+  char **arg3 = (char **) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DoubleArray_build",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_build" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "DoubleArray_build" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  {
+    /* Check if is a list */
+    if (PyList_Check(obj2)) {
+      int size = PyList_Size(obj2);
+      int i = 0;
+      arg3 = (char **) malloc((size+1)*sizeof(char *));
+      for (i = 0; i < size; i++) {
+        PyObject *o = PyList_GetItem(obj2,i);
+        if (PyString_Check(o))
+        arg3[i] = PyString_AsString(PyList_GetItem(obj2,i));
+        else {
+          PyErr_SetString(PyExc_TypeError,"list must contain strings");
+          free(arg3);
+          return NULL;
+        }
+      }
+      arg3[i] = 0;
+    } else {
+      PyErr_SetString(PyExc_TypeError,"not a list");
+      return NULL;
+    }
+  }
+  result = (int)(arg1)->build(arg2,arg3);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  {
+    free((char *) arg3);
+  }
+  return resultobj;
+fail:
+  {
+    free((char *) arg3);
+  }
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_build(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[7];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = (int)PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 6); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_size_t(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_p_char, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_DoubleArray_build__SWIG_3(self, args);
+        }
+      }
+    }
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_size_t(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_p_char, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          void *vptr = 0;
+          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_size_t, 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            return _wrap_DoubleArray_build__SWIG_2(self, args);
+          }
+        }
+      }
+    }
+  }
+  if (argc == 5) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_size_t(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_p_char, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          void *vptr = 0;
+          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_size_t, 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            void *vptr = 0;
+            int res = SWIG_ConvertPtr(argv[4], &vptr, SWIGTYPE_p_int, 0);
+            _v = SWIG_CheckState(res);
+            if (_v) {
+              return _wrap_DoubleArray_build__SWIG_1(self, args);
+            }
+          }
+        }
+      }
+    }
+  }
+  if (argc == 6) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_size_t(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_p_char, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          void *vptr = 0;
+          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_size_t, 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            void *vptr = 0;
+            int res = SWIG_ConvertPtr(argv[4], &vptr, SWIGTYPE_p_int, 0);
+            _v = SWIG_CheckState(res);
+            if (_v) {
+              void *ptr = 0;
+              int res = SWIG_ConvertFunctionPtr(argv[5], &ptr, SWIGTYPE_p_f_size_t_size_t__int);
+              _v = SWIG_CheckState(res);
+              if (_v) {
+                return _wrap_DoubleArray_build__SWIG_0(self, args);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'DoubleArray_build'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    build(Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *,size_t,char **,size_t *,int *,int (*)(size_t,size_t))\n"
+    "    build(Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *,size_t,char **,size_t *,int *)\n"
+    "    build(Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *,size_t,char **,size_t *)\n"
+    "    build(Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *,size_t,char **)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_save__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  size_t arg4 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  size_t val4 ;
+  int ecode4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:DoubleArray_save",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_save" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DoubleArray_save" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DoubleArray_save" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  ecode4 = SWIG_AsVal_size_t(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "DoubleArray_save" "', argument " "4"" of type '" "size_t""'");
+  } 
+  arg4 = static_cast< size_t >(val4);
+  result = (int)(arg1)->save((char const *)arg2,(char const *)arg3,arg4);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_save__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:DoubleArray_save",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_save" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DoubleArray_save" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DoubleArray_save" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  result = (int)(arg1)->save((char const *)arg2,(char const *)arg3);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_save__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  char *arg2 = (char *) 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:DoubleArray_save",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_save" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DoubleArray_save" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  result = (int)(arg1)->save((char const *)arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_save(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[5];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = (int)PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 4); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_DoubleArray_save__SWIG_2(self, args);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsCharPtrAndSize(argv[2], 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_DoubleArray_save__SWIG_1(self, args);
+        }
+      }
+    }
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsCharPtrAndSize(argv[2], 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          {
+            int res = SWIG_AsVal_size_t(argv[3], NULL);
+            _v = SWIG_CheckState(res);
+          }
+          if (_v) {
+            return _wrap_DoubleArray_save__SWIG_0(self, args);
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'DoubleArray_save'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    save(Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *,char const *,char const *,size_t)\n"
+    "    save(Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *,char const *,char const *)\n"
+    "    save(Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *,char const *)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_traverse__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  char *arg2 = (char *) 0 ;
+  size_t *arg3 = 0 ;
+  size_t *arg4 = 0 ;
+  size_t arg5 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  size_t val5 ;
+  int ecode5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:DoubleArray_traverse",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_traverse" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DoubleArray_traverse" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3, SWIGTYPE_p_size_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DoubleArray_traverse" "', argument " "3"" of type '" "size_t &""'"); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "DoubleArray_traverse" "', argument " "3"" of type '" "size_t &""'"); 
+  }
+  arg3 = reinterpret_cast< size_t * >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4, SWIGTYPE_p_size_t,  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "DoubleArray_traverse" "', argument " "4"" of type '" "size_t &""'"); 
+  }
+  if (!argp4) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "DoubleArray_traverse" "', argument " "4"" of type '" "size_t &""'"); 
+  }
+  arg4 = reinterpret_cast< size_t * >(argp4);
+  ecode5 = SWIG_AsVal_size_t(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "DoubleArray_traverse" "', argument " "5"" of type '" "size_t""'");
+  } 
+  arg5 = static_cast< size_t >(val5);
+  result = (int)(arg1)->traverse((char const *)arg2,*arg3,*arg4,arg5);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_traverse__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *arg1 = (Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *) 0 ;
+  char *arg2 = (char *) 0 ;
+  size_t *arg3 = 0 ;
+  size_t *arg4 = 0 ;
+  int result;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:DoubleArray_traverse",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "DoubleArray_traverse" "', argument " "1"" of type '" "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *""'"); 
+  }
+  arg1 = reinterpret_cast< Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "DoubleArray_traverse" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3, SWIGTYPE_p_size_t,  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "DoubleArray_traverse" "', argument " "3"" of type '" "size_t &""'"); 
+  }
+  if (!argp3) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "DoubleArray_traverse" "', argument " "3"" of type '" "size_t &""'"); 
+  }
+  arg3 = reinterpret_cast< size_t * >(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4, SWIGTYPE_p_size_t,  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "DoubleArray_traverse" "', argument " "4"" of type '" "size_t &""'"); 
+  }
+  if (!argp4) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "DoubleArray_traverse" "', argument " "4"" of type '" "size_t &""'"); 
+  }
+  arg4 = reinterpret_cast< size_t * >(argp4);
+  result = (int)(arg1)->traverse((char const *)arg2,*arg3,*arg4);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_DoubleArray_traverse(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[6];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = (int)PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 5); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_size_t, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          void *vptr = 0;
+          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_size_t, 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            return _wrap_DoubleArray_traverse__SWIG_1(self, args);
+          }
+        }
+      }
+    }
+  }
+  if (argc == 5) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr(argv[2], &vptr, SWIGTYPE_p_size_t, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          void *vptr = 0;
+          int res = SWIG_ConvertPtr(argv[3], &vptr, SWIGTYPE_p_size_t, 0);
+          _v = SWIG_CheckState(res);
+          if (_v) {
+            {
+              int res = SWIG_AsVal_size_t(argv[4], NULL);
+              _v = SWIG_CheckState(res);
+            }
+            if (_v) {
+              return _wrap_DoubleArray_traverse__SWIG_0(self, args);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'DoubleArray_traverse'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    traverse(Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *,char const *,size_t &,size_t &,size_t)\n"
+    "    traverse(Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *,char const *,size_t &,size_t &)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *DoubleArray_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 static PyMethodDef SwigMethods[] = {
+	 { (char *)"new_DoubleArray", _wrap_new_DoubleArray, METH_VARARGS, NULL},
+	 { (char *)"delete_DoubleArray", _wrap_delete_DoubleArray, METH_VARARGS, NULL},
+	 { (char *)"DoubleArray_clear", _wrap_DoubleArray_clear, METH_VARARGS, NULL},
+	 { (char *)"DoubleArray_unit_size", _wrap_DoubleArray_unit_size, METH_VARARGS, NULL},
+	 { (char *)"DoubleArray_size", _wrap_DoubleArray_size, METH_VARARGS, NULL},
+	 { (char *)"DoubleArray_total_size", _wrap_DoubleArray_total_size, METH_VARARGS, NULL},
+	 { (char *)"DoubleArray_nonzero_size", _wrap_DoubleArray_nonzero_size, METH_VARARGS, NULL},
+	 { (char *)"DoubleArray_build", _wrap_DoubleArray_build, METH_VARARGS, NULL},
+	 { (char *)"DoubleArray_save", _wrap_DoubleArray_save, METH_VARARGS, NULL},
+	 { (char *)"DoubleArray_traverse", _wrap_DoubleArray_traverse, METH_VARARGS, NULL},
+	 { (char *)"DoubleArray_swigregister", DoubleArray_swigregister, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
+static swig_type_info _swigt__p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t = {"_p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t", "Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int > *|Darts::DoubleArrayImpl< char,unsigned char,int,unsigned int,Length< char > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_f_size_t_size_t__int = {"_p_f_size_t_size_t__int", "int (*)(size_t,size_t)", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_int = {"_p_int", "int *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_p_char = {"_p_p_char", "char **", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_size_t = {"_p_size_t", "size_t *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
+  &_swigt__p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t,
   &_swigt__p_char,
+  &_swigt__p_f_size_t_size_t__int,
+  &_swigt__p_int,
+  &_swigt__p_p_char,
+  &_swigt__p_size_t,
 };
 
+static swig_cast_info _swigc__p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t[] = {  {&_swigt__p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_f_size_t_size_t__int[] = {  {&_swigt__p_f_size_t_size_t__int, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_int[] = {  {&_swigt__p_int, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_p_char[] = {  {&_swigt__p_p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_size_t[] = {  {&_swigt__p_size_t, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
+  _swigc__p_Darts__DoubleArrayImplT_char_unsigned_char_int_unsigned_int_LengthT_char_t_t,
   _swigc__p_char,
+  _swigc__p_f_size_t_size_t__int,
+  _swigc__p_int,
+  _swigc__p_p_char,
+  _swigc__p_size_t,
 };
 
 
