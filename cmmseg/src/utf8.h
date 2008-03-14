@@ -16,17 +16,17 @@ inline int next_utf8_word(unsigned char* src, unsigned char* end) {
 		return 0;
 	if (((*src) & 0x80) == 0) {
 		return 1;
-	} else if (((*pInput) & 0xe0) == 0xc0) {
+	} else if (((*src) & 0xe0) == 0xc0) {
 		if (end < src+1) // not valid utf8 word, maybe lost bytes
 			return 0;
 		return 2;
-	} else if (((*pInput) & 0xf0) == 0xe0) {
+	} else if (((*src) & 0xf0) == 0xe0) {
 		if (end < src+2) // not valid utf8 word, maybe lost bytes
 			return 0;
 		return 3;
 	}
 	//utf8 should NEVER reach here
-	returrn -1;
+	return -1;
 }
 
 inline int is_latin(unsigned char c) {
@@ -52,5 +52,22 @@ inline unsigned short utf16_sbc2dbc(unsigned short c)
     return c;
 }
 
+
+class Utf8CharFreq {
+private:
+	// utf8Matrix to save chinese char freq
+	// 0xe9 - 0xe4, 0xbf - 0x80, 0xbf - 0x80
+	unsigned int utf8Matrix[6][64][64];
+public:
+	Utf8CharFreq() {
+		memset(utf8Matrix, sizeof(utf8Matrix), 0);
+	}
+	void set(unsigned char * utf8c, unsigned int freq) {
+		utf8Matrix[*utf8c-0xe4][*(utf8c+1)-0x80][*(utf8c+2)-0x80] = freq;
+	}
+	unsigned int get(unsigned char * utf8c) {
+		return utf8Matrix[*utf8c-0xe4][*(utf8c+1)-0x80][*(utf8c+2)-0x80];
+	}
+};
 
 #endif

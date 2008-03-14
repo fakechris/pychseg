@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="test"
-	ProjectGUID="{3A2F4A75-64A5-40DE-AE0F-25297AFBA709}"
-	RootNamespace="test"
+	Name="build"
+	ProjectGUID="{45B36E93-70D0-4CE2-9A8E-689852B06D53}"
+	RootNamespace="build"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -41,7 +41,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../cxxtest"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -86,7 +85,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="ECHO -&#x0D;&#x0A;&#x0D;&#x0A;ECHO -&#x0D;&#x0A;&#x0D;&#x0A;ECHO -------------------- Running Unit Test Cases --------------------&#x0D;&#x0A;&#x0D;&#x0A;$(OutDir)\$(TargetName).exe&#x0D;&#x0A;&#x0D;&#x0A;ECHO -&#x0D;&#x0A;&#x0D;&#x0A;ECHO -&#x0D;&#x0A;&#x0D;&#x0A;ECHO -------------------------------------------------------------------------------&#x0D;&#x0A;&#x0D;&#x0A;DEL runner.cpp&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -173,7 +171,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\runner.cpp"
+				RelativePath="..\src\build.cpp"
 				>
 			</File>
 		</Filter>
@@ -183,7 +181,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\test\cmmsegtest.h"
+				RelativePath="..\src\darts.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\utf8.h"
 				>
 			</File>
 		</Filter>
@@ -193,19 +195,6 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
-		<File
-			RelativePath=".\Makefile"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					CommandLine="ECHO Don&apos;t Delete this file!!! &gt; Dummy&#x0D;&#x0A;&#x0D;&#x0A;ECHO -&#x0D;&#x0A;&#x0D;&#x0A;ECHO -&#x0D;&#x0A;&#x0D;&#x0A;ECHO -------------------- Generating test cases --------------------&#x0D;&#x0A;&#x0D;&#x0A;if exist runner.cpp del runner.cpp /Q&#x0D;&#x0A;&#x0D;&#x0A;NMAKE runner.cpp /nologo&#x0D;&#x0A;&#x0D;&#x0A;ECHO -&#x0D;&#x0A;&#x0D;&#x0A;ECHO ¨C&#x0D;&#x0A;&#x0D;&#x0A;"
-					Outputs="Runner.cpp"
-				/>
-			</FileConfiguration>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
