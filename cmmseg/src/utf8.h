@@ -55,19 +55,47 @@ inline unsigned short utf16_sbc2dbc(unsigned short c)
 
 class Utf8CharFreq {
 private:
-	// utf8Matrix to save chinese char freq
+	// utf8Matrix to save chinese char freq	
 	// 0xe9 - 0xe4, 0xbf - 0x80, 0xbf - 0x80
-	unsigned int utf8Matrix[6][64][64];
+	// a - 0x08 --> a & 0x7f
+	unsigned int utf8Matrix[6][64][64];		
+	// a trick maybe has potential danger
+	// for boost performance -> adjust start pos of utf8Matrix, minus 0xe4*64*64*4 --> '0x390000'(in ZONE_DMA, should be safe)
+	unsigned int *** utf8MatrixVirtualStart;
 public:
 	Utf8CharFreq() {
 		memset(utf8Matrix, sizeof(utf8Matrix), 0);
+		utf8MatrixVirtualStart = (unsigned int ***)((void*)utf8Matrix - 0xe4*64*64*sizeof(unsigned int))
+		
 	}
 	void set(unsigned char * utf8c, unsigned int freq) {
-		utf8Matrix[*utf8c-0xe4][*(utf8c+1)-0x80][*(utf8c+2)-0x80] = freq;
+		//assert (! (*utf8c > 0xe9 || *utf8c  0xe4 || *(utf8c+1) > 0xbf || *(utf8c+1) < 0x80 || *(utf8c+2) > 0xbf || *(utf8c+2) < 0x80) );
+		utf8MatrixVirtualStart[*utf8c][*(utf8c+1) & 0x7f][*(utf8c+2) & 0x7f] = freq;
 	}
 	unsigned int get(unsigned char * utf8c) {
-		return utf8Matrix[*utf8c-0xe4][*(utf8c+1)-0x80][*(utf8c+2)-0x80];
+		if ((*utf8c > 0xe9 || *utf8c  0xe4 || *(utf8c+1) > 0xbf || *(utf8c+1) < 0x80 || *(utf8c+2) > 0xbf || *(utf8c+2) < 0x80))
+			return 0;		
+		return utf8MatrixVirtualStart[*utf8c][*(utf8c+1) & 0x7f][*(utf8c+2) & 0x7f];
 	}
 };
+
+/*
+class Utf8CharFreqUncompress {
+private:
+	unsigned int utf8Matrix[6][256][256];
+	unsigned int *** utf8MatrixVirtualStart;
+public:
+	Utf8CharFreq() {
+		memset(utf8Matrix, sizeof(utf8Matrix), 0);
+		utf8MatrixVirtualStart = (unsigned int ***)((void*)utf8Matrix - 0xe4*256*256*sizeof(unsigned int))
+	}
+	void set(unsigned char * utf8c, unsigned int freq) {
+		utf8MatrixVirtualStart[*utf8c][*(utf8c+1)][*(utf8c+2)] = freq;
+	}
+	unsigned int get(unsigned char * utf8c) {
+		return utf8MatrixVirtualStart[*utf8c][*(utf8c+1)][*(utf8c+2)];
+	}
+};
+*/
 
 #endif
