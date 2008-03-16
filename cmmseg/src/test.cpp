@@ -1,11 +1,13 @@
 // wordtest.cpp : Defines the entry point for the console application.
 //
 
-#include "darts.h"
-
+#include <iostream>
 #include <tchar.h>
 
+#include "darts.h"
 using namespace Darts;
+
+#include "dict.h"
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -50,7 +52,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	ret = da->commonPrefixSearch("sdzl", results, resultlen);
 	printf("%d %d\n", results[0], ret);
 
-	
+	WordDict * w = WordDict::Instance();
+	CharDict * c = CharDict::Instance();
+
+	unsigned char c1[3] = {0xe7, 0x9a, 0x84};
+	unsigned int r = c->get(c1);
+
+	unsigned char c2[13] = {0xe4, 0xb8, 0x80, 0xe4, 0xb8, 0x96, 0xe4, 0xb9, 0x8b, 0xe9, 0x9b, 0x84, 0x0};
+	int r2 = w->exactMatchSearch((const char*)c2);
+
+	std::cout << r << " " << r2;
 
 	return 0;
 }

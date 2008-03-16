@@ -32,15 +32,9 @@ private:
 	double cacheVariance;
 	double cacheDegree;
 	unsigned int cacheReverseLength;
+
 	// TODO: caching type 2 --> per WordList cache
 public:	
-	Chunk() {
-		cacheLength = 0;
-		cacheAverageLength = -1.0;
-		cacheVariance = -1.0;
-		cacheDegree = -1.0;
-		cacheReverseLength = 0;
-	}
 	Chunk(Word* words, int len) : cacheLength(0), cacheAverageLength(-1.0), cacheVariance(-1.0), cacheDegree(-1.0), cacheReverseLength(0) {
 		this->words = words;
 		this->len = len;		

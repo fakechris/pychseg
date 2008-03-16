@@ -73,6 +73,8 @@ public:
 	}
 	void set(unsigned char * utf8c, unsigned int freq) {
 		//assert (! (*utf8c > 0xe9 || *utf8c  0xe4 || *(utf8c+1) > 0xbf || *(utf8c+1) < 0x80 || *(utf8c+2) > 0xbf || *(utf8c+2) < 0x80) );
+		if (*utf8c > 0xe9 || *utf8c < 0xe4 || *(utf8c+1) > 0xbf || *(utf8c+1) < 0x80 || *(utf8c+2) > 0xbf || *(utf8c+2) < 0x80)
+			return;
 		*(utf8MatrixVirtualStart + (*utf8c << 12) + ((*(utf8c+1) & 0x7f) << 6) + (*(utf8c+2) & 0x7f)) = freq;
 	}
 	unsigned int get(unsigned char * utf8c) {

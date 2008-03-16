@@ -171,6 +171,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\src\dict.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\test.cpp"
 				>
 			</File>
@@ -186,6 +190,10 @@
 			</File>
 			<File
 				RelativePath="..\src\darts.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\dict.h"
 				>
 			</File>
 			<File
