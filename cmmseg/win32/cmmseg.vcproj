@@ -181,6 +181,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\src\chunk.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\darts.h"
 				>
 			</File>
@@ -203,7 +207,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="swig -c++ -python pydarts.i"
+					CommandLine="swig -c++ -python pydarts.i&#x0D;&#x0A;"
 				/>
 			</FileConfiguration>
 		</File>

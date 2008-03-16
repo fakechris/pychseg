@@ -8,17 +8,17 @@
 
 #include <math.h>
 
-template <class T> inline takeHighest(T* list, int len, T* result, int (*compar)(const void *, const void *)) {
+template <class T> inline void takeHighest(T* list, int len, T* result, int (*compar)(const void *, const void *)) {
 	for (int i = 0; i < len; i++) {
-		compar(); 
+		compar(NULL, NULL); 
 	}
 }
 
-struct _Word {
+typedef struct _Word {
 	//unsigned char * start;
 	//unsigned char * end;
 	int wordLen; // utf8 word len, not end-start
-	int freq; // if wordLen == 1
+	double freq; // if wordLen == 1
 } Word;
 
 class Chunk {
@@ -27,25 +27,31 @@ private:
 	int len;
 	
 	// caching type 1 --> per Chunk cache
-	int cacheLength = 0;
-	double cacheAverageLength = -1.0;
-	double cacheVariance = -1.0;
-	double cacheDegree = -1.0;
-	unsigned int reverseLength = 0;
+	int cacheLength;
+	double cacheAverageLength;
+	double cacheVariance;
+	double cacheDegree;
+	unsigned int cacheReverseLength;
 	// TODO: caching type 2 --> per WordList cache
 public:	
-	Chunk() {}
-	Chunk(Word* words, int len) {
+	Chunk() {
+		cacheLength = 0;
+		cacheAverageLength = -1.0;
+		cacheVariance = -1.0;
+		cacheDegree = -1.0;
+		cacheReverseLength = 0;
+	}
+	Chunk(Word* words, int len) : cacheLength(0), cacheAverageLength(-1.0), cacheVariance(-1.0), cacheDegree(-1.0), cacheReverseLength(0) {
 		this->words = words;
-		this->len = len;
+		this->len = len;		
 	}
 	
 	int length() {
 		if (cacheLength != 0) 
 			return cacheLength;
 
-		for (i = 0; i < len; i++) 
-			cacheLength += words[i]->wordLen;
+		for (int i = 0; i < len; i++) 
+			cacheLength += words[i].wordLen;
 		return cacheLength;
 	}
 	
@@ -63,8 +69,8 @@ public:
 		
 		double average = averageLength();
 		cacheVariance = 0.0;
-		for (i = 0; i < len; i++)
-			cacheVariance += pow(words[i]->wordLen-average, 2) ;
+		for (int i = 0; i < len; i++)
+			cacheVariance += pow(words[i].wordLen-average, 2) ;
 		cacheVariance = sqrt( cacheVariance/len	);
 		return cacheVariance;
 	}
@@ -74,20 +80,20 @@ public:
 			return cacheDegree;
 		
 		cacheDegree = 0.0;
-		for (i = 0; i < len; i++)
-			if (words[i]->freq > 1)
-				cacheDegree += log(words[i]->freq);		
+		for (int i = 0; i < len; i++)
+			if (words[i].freq > 1.0)
+				cacheDegree += log(words[i].freq);
 		return cacheDegree;
 	}
 	
 	int reverseLength() {
-		if (reverseLength != 0)
-			return reverseLength;
+		if (cacheReverseLength != 0)
+			return cacheReverseLength;
 			
-		for (i = 0; i < len; i++)
-			reverseLength += words[i]->wordLen << (i<<3);
-		return reverseLength;
+		for (int i = 0; i < len; i++)
+			cacheReverseLength += words[i].wordLen << (i<<3);
+		return cacheReverseLength;
 	}
-}
+};
 
 #endif

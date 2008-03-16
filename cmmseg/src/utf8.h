@@ -53,6 +53,10 @@ inline unsigned short utf16_sbc2dbc(unsigned short c)
 }
 
 
+/**
+ * optimized version
+ * WARNNING: this class MUST BE ALLOCATED ON HEAP, NOT STACK, because utf8Matrix's address should located after 0x390000 
+ */
 class Utf8CharFreq {
 private:
 	// utf8Matrix to save chinese char freq	
@@ -60,26 +64,45 @@ private:
 	// a - 0x08 --> a & 0x7f
 	unsigned int utf8Matrix[6][64][64];		
 	// a trick maybe has potential danger
-	// for boost performance -> adjust start pos of utf8Matrix, minus 0xe4*64*64*4 --> '0x390000'(in ZONE_DMA, should be safe)
-	unsigned int *** utf8MatrixVirtualStart;
+	// for boost performance -> adjust start pos of utf8Matrix, minus 0xe4*64*64*4 --> '0x390000'
+	unsigned int * utf8MatrixVirtualStart;
 public:
 	Utf8CharFreq() {
-		memset(utf8Matrix, sizeof(utf8Matrix), 0);
-		utf8MatrixVirtualStart = (unsigned int ***)((void*)utf8Matrix - 0xe4*64*64*sizeof(unsigned int))
-		
+		memset((void*)utf8Matrix, 0, sizeof(utf8Matrix));
+		utf8MatrixVirtualStart = (unsigned int *)((char*)utf8Matrix - 0xe4*64*64*sizeof(unsigned int));		
 	}
 	void set(unsigned char * utf8c, unsigned int freq) {
 		//assert (! (*utf8c > 0xe9 || *utf8c  0xe4 || *(utf8c+1) > 0xbf || *(utf8c+1) < 0x80 || *(utf8c+2) > 0xbf || *(utf8c+2) < 0x80) );
-		utf8MatrixVirtualStart[*utf8c][*(utf8c+1) & 0x7f][*(utf8c+2) & 0x7f] = freq;
+		*(utf8MatrixVirtualStart + (*utf8c << 12) + ((*(utf8c+1) & 0x7f) << 6) + (*(utf8c+2) & 0x7f)) = freq;
 	}
 	unsigned int get(unsigned char * utf8c) {
-		if ((*utf8c > 0xe9 || *utf8c  0xe4 || *(utf8c+1) > 0xbf || *(utf8c+1) < 0x80 || *(utf8c+2) > 0xbf || *(utf8c+2) < 0x80))
+		if (*utf8c > 0xe9 || *utf8c < 0xe4 || *(utf8c+1) > 0xbf || *(utf8c+1) < 0x80 || *(utf8c+2) > 0xbf || *(utf8c+2) < 0x80)
 			return 0;		
-		return utf8MatrixVirtualStart[*utf8c][*(utf8c+1) & 0x7f][*(utf8c+2) & 0x7f];
+		return *(utf8MatrixVirtualStart + (*utf8c << 12) + ((*(utf8c+1) & 0x7f) << 6) + (*(utf8c+2) & 0x7f));
 	}
 };
 
 /*
+class Utf8CharFreq {
+private:
+	// utf8Matrix to save chinese char freq	
+	// 0xe9 - 0xe4, 0xbf - 0x80, 0xbf - 0x80
+	// a - 0x08 --> a & 0x7f
+	unsigned int utf8Matrix[6][64][64];		
+public:
+	Utf8CharFreq() {
+		memset((void*)utf8Matrix, 0, sizeof(utf8Matrix));
+	}
+	void set(unsigned char * utf8c, unsigned int freq) {
+		utf8Matrix[*utf8c-0xer][*(utf8c+1) & 0x7f][*(utf8c+2) & 0x7f] = freq;
+	}
+	unsigned int get(unsigned char * utf8c) {
+		if (*utf8c > 0xe9 || *utf8c < 0xe4 || *(utf8c+1) > 0xbf || *(utf8c+1) < 0x80 || *(utf8c+2) > 0xbf || *(utf8c+2) < 0x80)
+			return 0;		
+		return utf8Matrix[*utf8c-0xer][*(utf8c+1) & 0x7f][*(utf8c+2) & 0x7f];
+	}
+};
+
 class Utf8CharFreqUncompress {
 private:
 	unsigned int utf8Matrix[6][256][256];
