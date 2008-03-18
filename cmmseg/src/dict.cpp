@@ -1,3 +1,4 @@
+// TODO: add license here --> Chris Song
 
 #include <stdio.h>
 
@@ -7,6 +8,7 @@
 #include <list>
 using namespace std;
 
+#include "conf.h"
 #include "dict.h"
 
 WordDict* WordDict::_instance;
@@ -21,6 +23,9 @@ WordDict* WordDict::Instance(){
 WordDict::WordDict() : doubleArray(NULL) {	
 }
 
+//TODO: assume dict contains 200k entries max
+#define MAX_WORDDICT_LEN 204800
+#define MAX_WORD_LEN 64
 int WordDict::load() {
 	doubleArray = new DoubleArray();
 
@@ -28,19 +33,19 @@ int WordDict::load() {
 	if(!in) {
 		return -1;
 	}
-
-	//TODO: assume dict contains 200k entries max
-	auto_ptr<char *> buf(new char*[204800]);	
-	auto_ptr<char *> words((char**)new char[204800][64]);
+	
+	auto_ptr<char *> buf(new char*[MAX_WORDDICT_LEN]);	
+	auto_ptr<char *> words((char**)new char[MAX_WORDDICT_LEN][MAX_WORD_LEN]);
 
 	int i=0;
 	while(in) {
-		//TODO: assume max word len 20
-		//char * str = (char*)words+64*i;
-		char * str = (char*)words.get()+64*i;
-		in.getline(str, 64);		
-		buf.get()[i] = str;		
-		i++;	
+		char * str = (char*)words.get()+MAX_WORD_LEN*i;
+		in.getline(str, MAX_WORD_LEN);	
+		if (str[0] != 0) {
+			buf.get()[i] = str;		
+			i++;
+			ASSERT( i < MAX_WORDDICT_LEN );
+		}
 	}
 	in.close();
 
@@ -77,6 +82,7 @@ CharDict::CharDict() : utf8charfreq(NULL) {
 	
 }
 
+#define MAX_WORDFREQ_LEN 64
 int CharDict::load() {
 	utf8charfreq = new Utf8CharFreq();
 
@@ -85,11 +91,11 @@ int CharDict::load() {
 		return -1;
 	}
 
-	unsigned char str[64];
+	unsigned char str[MAX_WORDFREQ_LEN];
 	unsigned char utf8char[4];
 	unsigned int freq;
 	while(in) {
-		in.getline((char*)str, 64);		
+		in.getline((char*)str, MAX_WORDFREQ_LEN);		
 		sscanf_s((const char*)str, "%4s %lu", utf8char, 4, &freq);
 		utf8charfreq->set(utf8char, freq);
 	}

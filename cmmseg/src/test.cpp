@@ -1,3 +1,4 @@
+// TODO: add license here --> Chris Song
 // wordtest.cpp : Defines the entry point for the console application.
 //
 
@@ -9,8 +10,19 @@ using namespace Darts;
 
 #include "dict.h"
 
+#include <strstream>
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+
+	std::istrstream is("test");
+	unsigned char cc;
+	int pos;
+	pos = is.tellg();
+	while(is)
+		is >> cc;
+	pos = is.tellg();
+
 	/* simple test method */
 	DoubleArray* da = new DoubleArray();
 
@@ -58,7 +70,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	unsigned char c1[3] = {0xe7, 0x9a, 0x84};
 	unsigned int r = c->get(c1);
 
-	unsigned char c2[13] = {0xe4, 0xb8, 0x80, 0xe4, 0xb8, 0x96, 0xe4, 0xb9, 0x8b, 0xe9, 0x9b, 0x84, 0x0};
+	//unsigned char c2[13] = {0xe4, 0xb8, 0x80, 0xe4, 0xb8, 0x96, 0xe4, 0xb9, 0x8b, 0xe9, 0x9b, 0x84, 0x0};
+	unsigned char c2[7] = {0xe4, 0xb8, 0x80, 0xe4, 0xb8, 0x80, 0x0};
 	int r2 = w->exactMatchSearch((const char*)c2);
 
 	std::cout << r << " " << r2;

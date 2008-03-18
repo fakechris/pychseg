@@ -1,7 +1,4 @@
-
-/**
-  * TODO: add license here --> Chris Song
-  */
+// TODO: add license here --> Chris Song
 
 #ifndef _CMMSEG_CHUNK_H_
 #define _CMMSEG_CHUNK_H_

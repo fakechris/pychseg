@@ -1,10 +1,9 @@
-
-/**
-  * TODO: add license here --> Chris Song
-  */
+// TODO: add license here --> Chris Song
 
 #ifndef _CMMSEG_UTF8_H_
 #define _CMMSEG_UTF8_H_
+
+#include "conf.h"
 
 /*!
 	\param src   begin pointer of string
@@ -69,10 +68,11 @@ private:
 public:
 	Utf8CharFreq() {
 		memset((void*)utf8Matrix, 0, sizeof(utf8Matrix));
+		ASSERT((unsigned int)(void*)utf8Matrix > 0x390000);
 		utf8MatrixVirtualStart = (unsigned int *)((char*)utf8Matrix - 0xe4*64*64*sizeof(unsigned int));		
 	}
 	void set(unsigned char * utf8c, unsigned int freq) {
-		//assert (! (*utf8c > 0xe9 || *utf8c  0xe4 || *(utf8c+1) > 0xbf || *(utf8c+1) < 0x80 || *(utf8c+2) > 0xbf || *(utf8c+2) < 0x80) );
+		//ASSERT (! (*utf8c > 0xe9 || *utf8c  0xe4 || *(utf8c+1) > 0xbf || *(utf8c+1) < 0x80 || *(utf8c+2) > 0xbf || *(utf8c+2) < 0x80) );
 		if (*utf8c > 0xe9 || *utf8c < 0xe4 || *(utf8c+1) > 0xbf || *(utf8c+1) < 0x80 || *(utf8c+2) > 0xbf || *(utf8c+2) < 0x80)
 			return;
 		*(utf8MatrixVirtualStart + (*utf8c << 12) + ((*(utf8c+1) & 0x7f) << 6) + (*(utf8c+2) & 0x7f)) = freq;

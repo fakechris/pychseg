@@ -175,6 +175,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\segment.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\test.cpp"
 				>
 			</File>
@@ -189,11 +193,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\conf.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\darts.h"
 				>
 			</File>
 			<File
 				RelativePath="..\src\dict.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\segment.h"
 				>
 			</File>
 			<File

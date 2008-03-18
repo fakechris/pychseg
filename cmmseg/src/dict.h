@@ -1,3 +1,5 @@
+// TODO: add license here --> Chris Song
+
 #ifndef _CMMSEG_DICT_H_
 #define _CMMSEG_DICT_H_
 
