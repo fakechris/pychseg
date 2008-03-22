@@ -9,33 +9,33 @@ using namespace Darts;
 
 class WordDict{
 public:
-    static WordDict* Instance();	
-    int exactMatchSearch(const char *key, size_t len = 0, size_t node_pos = 0);	
-    size_t commonPrefixSearch(const char *key,
+    static WordDict* Instance();    
+    int exactMatchSearch(const uint8_t *key, size_t len = 0, size_t node_pos = 0); 
+    size_t commonPrefixSearch(const uint8_t *key,
                               int* result,
                               size_t result_len,
                               size_t len = 0,
                               size_t node_pos = 0);
 protected:
-	WordDict();
+    WordDict();
 private:
-	DoubleArray* doubleArray;
+    DoubleArray* doubleArray;
     static WordDict* _instance;
 
-	int load();
+    int load();
 };
 
 class CharDict{
 public:
     static CharDict* Instance();
-	unsigned int get(unsigned char * utf8c);
+    unsigned int get(uint8_t * utf8c);
 protected:
     CharDict();
 private:
-	Utf8CharFreq * utf8charfreq;
+    Utf8CharFreq * utf8charfreq;
     static CharDict* _instance;
 
-	int load();
+    int load();
 };
 
 #endif
